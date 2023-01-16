@@ -3,7 +3,7 @@ const loadGameButton = document.querySelector(".load-game");
 
 function main() {
     newGameButton.addEventListener("click", () => {
-        document.location = "../partida";
+        document.location = "/puntos-ginyote/partida";
     });
 }
 
