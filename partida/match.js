@@ -27,12 +27,14 @@ String.prototype.ljust = function(count, char = " ") {
 }
 
 export class Match {
-    constructor(maxRounds) {
+    constructor(maxRounds, xCount) {
         this.team1Xs = new Array(maxRounds).fill(0);
         this.team2Xs = new Array(maxRounds).fill(0);
 
         this.maxRounds = maxRounds;
         this.roundIndex = 0;
+
+        this.xCount = xCount
 
         this.resetPts();
     }
@@ -55,16 +57,16 @@ export class Match {
     }
 
     team1Won() {
-        return this.isLastRound() && !this.isTie() && this.team1Xs[this.roundIndex] === 4;
+        return this.isLastRound() && !this.isTie() && this.team1Xs[this.roundIndex] === this.xCount;
     }
 
     team2Won() {
-        return this.isLastRound() && !this.isTie() && this.team2Xs[this.roundIndex] === 4;
+        return this.isLastRound() && !this.isTie() && this.team2Xs[this.roundIndex] === this.xCount;
     }
 
     isTie() {
-        return this.team1Xs.filter(x => x === 4).length
-            === this.team2Xs.filter(x => x === 4).length;
+        return this.team1Xs.filter(x => x === this.xCount).length
+            === this.team2Xs.filter(x => x === this.xCount).length;
     }
 
     isLastRound() {
@@ -84,23 +86,23 @@ export class Match {
 
     winTeam1() {
         this.resetPts();
-        if (this.team1Xs[this.roundIndex] > 3) return;
+        if (this.team1Xs[this.roundIndex] > this.xCount - 1) return;
         this.team1Xs[this.roundIndex]++;
-        if (this.team1Xs[this.roundIndex] > 3) this.passRound();
+        if (this.team1Xs[this.roundIndex] > this.xCount - 1) this.passRound();
     }
 
     winTeam2() {
         this.resetPts();
-        if (this.team2Xs[this.roundIndex] > 3) return;
+        if (this.team2Xs[this.roundIndex] > this.xCount - 1) return;
         this.team2Xs[this.roundIndex]++;
-        if (this.team2Xs[this.roundIndex] > 3) this.passRound();
+        if (this.team2Xs[this.roundIndex] > this.xCount - 1) this.passRound();
     }
 
     render(team1XsSpan, team2XsSpan, team1PtsSpan, team2PtsSpan, messagesP) {
-        team1PtsSpan.innerHTML = goodOrBad(this.team1Pts).toString().rjust(3).replace(" ", "&nbsp;");
-        team2PtsSpan.innerHTML = goodOrBad(this.team2Pts).toString().rjust(3).replace(" ", "&nbsp;");
-        team1XsSpan.innerHTML = this.team1Xs.map(x => "X".repeat(x).ljust(4).replace(" ", "&nbsp;")).join("&nbsp;".repeat(4));
-        team2XsSpan.innerHTML = this.team2Xs.map(x => "X".repeat(x).ljust(4).replace(" ", "&nbsp;")).join("&nbsp;".repeat(4));
+        team1PtsSpan.innerHTML = goodOrBad(this.team1Pts).toString().rjust(this.xCount - 1).replace(" ", "&nbsp;");
+        team2PtsSpan.innerHTML = goodOrBad(this.team2Pts).toString().rjust(this.xCount - 1).replace(" ", "&nbsp;");
+        team1XsSpan.innerHTML = this.team1Xs.map(x => "X".repeat(x).ljust(this.xCount).replace(" ", "&nbsp;")).join("&nbsp;".repeat(this.xCount));
+        team2XsSpan.innerHTML = this.team2Xs.map(x => "X".repeat(x).ljust(this.xCount).replace(" ", "&nbsp;")).join("&nbsp;".repeat(this.xCount));
         if (this.team1Won()) {
             messagesP.innerText = "¡El equipo 1 ha ganado la partida!";
         } else if (this.team2Won()) {

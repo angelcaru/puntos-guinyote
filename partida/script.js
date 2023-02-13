@@ -58,6 +58,10 @@ function removeMenu() {
     document.body.appendChild(
         button(document.createTextNode("Volver a jugar"),
             () => location.reload()));
+    document.body.appendChild(document.createElement("br"));
+    document.body.appendChild(
+        button(document.createTextNode("Volver al menú principal"),
+            () => document.location = "/puntos-guinyote/principal"));
 }
 
 function renderMatch(match) {
@@ -65,7 +69,7 @@ function renderMatch(match) {
 }
 
 function main() {
-    const match = new Match(2);
+    const match = new Match(+localStorage.getItem("round-count"), +localStorage.getItem("x-count"));
     renderMatch(match);
 
     team1WonButton.addEventListener("click", () => {
