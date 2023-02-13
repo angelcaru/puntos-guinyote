@@ -64,24 +64,31 @@ function removeMenu() {
             () => document.location = "/puntos-guinyote/principal"));
 }
 
+function updateMatch(match, update = null) {
+    history.push(match.copy());
+
+    if (update !== null) update();
+
+    renderMatch(match);
+}
+
 function renderMatch(match) {
     match.render(team1XsSpan, team2XsSpan, team1PtsSpan, team2PtsSpan, messagesP);
 }
+const history = [];
 
 function main() {
-    const match = new Match(+localStorage.getItem("round-count"), +localStorage.getItem("x-count"));
-    renderMatch(match);
+    let match = new Match(+localStorage.getItem("round-count"), +localStorage.getItem("x-count"));
+    updateMatch(match);
 
     team1WonButton.addEventListener("click", () => {
-        match.winTeam1();
-        renderMatch(match);
+        updateMatch(match, () => match.winTeam1());
         if (match.team1Won()) {
             removeMenu();
         }
     });
     team2WonButton.addEventListener("click", () => {
-        match.winTeam2();
-        renderMatch(match);
+        updateMatch(match, () => match.winTeam2());
         if (match.team2Won()) {
             removeMenu();
         }
@@ -94,20 +101,25 @@ function main() {
                 const pts = promptInt("¿Qué puntuación (sin cantes)?");
                 const additionalT1 = promptInt("Introduzca los puntos de cante del equipo 1");
                 const additionalT2 = promptInt("Introduzca los puntos de cante del equipo 2");
-                match.setTeam1Pts(pts, additionalT1, additionalT2);
-                renderMatch(match /* matc was here */);
+                updateMatch(match /* matc was here */, () => match.setTeam1Pts(pts, additionalT1, additionalT2));
                 div.remove();
             },
             "Equipo 2": () => {
                 const pts = promptInt("¿Qué puntuación (sin cantes)?");
                 const additionalT1 = promptInt("Introduzca los puntos de cante del equipo 1");
                 const additionalT2 = promptInt("Introduzca los puntos de cante del equipo 2");
-                match.setTeam2Pts(pts, additionalT1, additionalT2);
-                renderMatch(match);
+                updateMatch(match, match.setTeam2Pts(pts, additionalT1, additionalT2));
                 div.remove();
             },
         }));
         document.body.appendChild(div);
+    });
+    document.querySelector(".undo").addEventListener("click", () => {
+        if (history.length !== 0) {
+            console.log(JSON.stringify(match))
+            console.log(match)
+            renderMatch(match = history.pop());
+        }
     });
 }
 

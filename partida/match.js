@@ -44,6 +44,17 @@ export class Match {
         this.team2Pts = 0;
     }
 
+    copy() {
+        const match = new Match(this.maxRounds, this.xCount);
+        match.team1Xs = this.team1Xs.slice();
+        match.team2Xs = this.team2Xs.slice();
+        match.roundIndex = this.roundIndex;
+
+        match.team1Pts = this.team1Pts;
+        match.team2Pts = this.team2Pts;
+        return match;
+    }
+
     setTeam1Pts(pts, additionalT1, additionalT2) {
         const real = realPts(pts);
         this.team1Pts = real + additionalT1;
